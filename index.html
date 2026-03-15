@@ -1,0 +1,1511 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Watch & Earn Premium Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src='//libtl.com/sdk.js' data-zone='10732964' data-sdk='show_10732964'></script>
+<style>
+        /* ================= ULTRA PREMIUM VARIABLES ================= */
+        :root {
+            /* Backgrounds */
+            --bg-dark: #05070a;
+            --bg-card: rgba(20, 25, 35, 0.6);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            
+            /* Accents */
+            --gold-light: #FBE18D;
+            --gold-main: #FFD700;
+            --gold-dark: #D4AF37;
+            --neon-cyan: #00E5FF;
+            --neon-pink: #FF007A;
+            --neon-purple: #9D00FF;
+            
+            /* Gradients */
+            --grad-gold: linear-gradient(135deg, #FFDF00, #D4AF37, #996515);
+            --grad-premium: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            --grad-cyan: linear-gradient(135deg, #0055FF, var(--neon-cyan));
+            
+            /* Text */
+            --text-main: #FFFFFF;
+            --text-muted: #8E9BAE;
+            
+            /* Borders & Shadows */
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-gold: rgba(255, 215, 0, 0.3);
+            --shadow-gold: 0 0 20px rgba(255, 215, 0, 0.2);
+            --shadow-cyan: 0 0 20px rgba(0, 229, 255, 0.2);
+            
+            /* Radius */
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+        }
+
+        /* Global Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Browser Wrapper */
+        #master-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 0%, rgba(157, 0, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 100%, rgba(0, 229, 255, 0.1) 0%, transparent 40%);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Screens Setup */
+        .screen { flex: 1; width: 100%; display: flex; flex-direction: column; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; min-height: 100vh; }
+        
+        #loading-screen { justify-content: center; align-items: center; background: var(--bg-dark); z-index: 90; }
+        .premium-loader { width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--border-glass); border-top-color: var(--gold-main); animation: spin 1s linear infinite; box-shadow: var(--shadow-gold); }
+
+        /* ================= APP SCREEN ================= */
+        #app-screen { padding: 20px 0 110px 0; overflow-y: auto; overflow-x: hidden; z-index: 20; scroll-behavior: smooth; }
+        
+        /* Profile & Vault Header */
+        .header-section { padding: 0 20px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .glass-card {
+            background: var(--bg-card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass); border-radius: var(--radius-xl);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden;
+        }
+
+        /* Profile Row */
+        .profile-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; }
+        .user-info-flex { display: flex; align-items: center; gap: 15px; }
+        
+        .avatar-container { position: relative; }
+        .avatar {
+            width: 56px; height: 56px; border-radius: 18px; background: var(--grad-premium);
+            display: flex; justify-content: center; align-items: center; font-size: 22px; font-weight: 800; cursor: pointer;
+            border: 2px solid transparent; background-clip: padding-box; position: relative;
+            box-shadow: 0 10px 20px rgba(157, 0, 255, 0.2); transition: 0.3s; overflow: hidden;
+        }
+        .avatar::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: var(--grad-premium); z-index: -1; border-radius: 20px; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .cam-overlay { position: absolute; bottom: 0; width: 100%; height: 35%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; font-size: 10px; backdrop-filter: blur(2px); }
+
+        .user-details h3 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+        .edit-badge { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 8px; font-size: 11px; color: var(--neon-cyan); cursor: pointer; }
+        .user-details p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+        /* --- NEW: Running Light Border Vault Box --- */
+        .vault-card-wrapper {
+            position: relative;
+            padding: 2px; /* Border Thickness */
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .vault-card-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, var(--neon-purple), var(--neon-cyan), transparent 60%);
+            animation: spin 4s linear infinite;
+            z-index: 0;
+        }
+        .vault-card {
+            position: relative;
+            padding: 20px; 
+            text-align: center; 
+            background: linear-gradient(180deg, rgba(15,20,30,0.98) 0%, rgba(10,15,25,1) 100%); 
+            border-radius: calc(var(--radius-xl) - 2px);
+            z-index: 1;
+        }
+        
+        .vault-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
+        .vault-title { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; text-align: left; }
+        .vault-amount { font-size: 36px; font-weight: 900; background: var(--grad-cyan); -webkit-background-clip: text; color: transparent; line-height: 1; filter: drop-shadow(0 0 10px rgba(0,229,255,0.3)); }
+        
+        /* --- NEW: Purple Glow Line Border --- */
+        .progress-track { 
+            width: 100%; height: 16px; 
+            background: rgba(0,0,0,0.8); 
+            border-radius: 20px; 
+            border: 2px solid var(--neon-purple); /* Purple Border */
+            overflow: hidden; 
+            position: relative; 
+            box-shadow: 0 0 15px rgba(157, 0, 255, 0.6), inset 0 2px 5px rgba(0,0,0,0.5); /* Purple Glow */
+        }
+        .progress-fill { height: 100%; background: var(--grad-cyan); width: 0%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 20px; position: relative; box-shadow: 0 0 15px var(--neon-cyan); }
+        .progress-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shimmer 2s infinite linear; }
+        
+        .vault-footer { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; font-weight: 600; }
+        .vault-footer .left-txt { color: var(--text-muted); }
+        .vault-footer .target-txt { color: var(--gold-main); font-weight: 800; }
+
+        /* The Main 3D Action Button */
+        .action-arena { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 40px 0; position: relative; }
+        
+        .orb-wrapper { position: relative; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; }
+        .orb-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px dashed rgba(255, 215, 0, 0.3); animation: spin-slow 15s linear infinite; }
+        .orb-ring-2 { position: absolute; width: 85%; height: 85%; border-radius: 50%; border: 2px solid rgba(0, 229, 255, 0.2); animation: spin-slow-reverse 10s linear infinite; }
+        .orb-glow { position: absolute; width: 70%; height: 70%; border-radius: 50%; background: var(--gold-main); filter: blur(40px); opacity: 0.3; animation: pulse-glow 2s infinite alternate; }
+        
+        .play-orb {
+            width: 140px; height: 140px; border-radius: 50%; 
+            background: linear-gradient(135deg, #FFE159 0%, #E29B00 100%);
+            display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative; z-index: 5;
+            box-shadow: 0 15px 35px rgba(226, 155, 0, 0.4), inset 0 5px 15px rgba(255, 255, 255, 0.5), inset 0 -10px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid rgba(255,255,255,0.2);
+        }
+        .play-orb:active { transform: scale(0.92) translateY(5px); box-shadow: 0 5px 15px rgba(226, 155, 0, 0.4), inset 0 5px 15px rgba(255, 255, 255, 0.2), inset 0 -5px 10px rgba(0, 0, 0, 0.4); }
+        .play-orb i { font-size: 55px; color: #FFF; text-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-left: 8px; }
+        
+        .orb-text-wrapper { text-align: center; margin-top: 25px; z-index: 2; }
+        .orb-title { font-size: 26px; font-weight: 900; color: white; letter-spacing: 1px; text-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 8px; }
+        .orb-subtitle { background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-glass); font-size: 15px; font-weight: 600; color: var(--gold-light); display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+
+        /* Premium Quick Actions (Now Daily Bonus and Invite) */
+        .grid-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
+        .grid-card {
+            background: rgba(20, 25, 35, 0.5); border: 1px solid var(--border-glass); border-radius: var(--radius-xl);
+            padding: 20px 15px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .grid-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none; }
+        .grid-card:active { transform: scale(0.95); }
+        
+        .gc-bonus { border-color: rgba(255, 215, 0, 0.2); }
+        .gc-bonus .icon-wrap { background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), transparent); color: var(--gold-main); box-shadow: 0 0 20px rgba(255,215,0,0.1); }
+        
+        .gc-invite { border-color: rgba(255, 0, 122, 0.2); }
+        .gc-invite .icon-wrap { background: linear-gradient(135deg, rgba(255, 0, 122, 0.2), transparent); color: var(--neon-pink); box-shadow: 0 0 20px rgba(255,0,122,0.1); }
+        
+        .grid-card .icon-wrap { width: 50px; height: 50px; border-radius: 16px; display: inline-flex; justify-content: center; align-items: center; font-size: 24px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .grid-card h4 { font-size: 16px; font-weight: 800; color: white; margin-bottom: 4px; }
+        .grid-card p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+        /* Floating Bottom Navigation (Now Leaderboard and Withdraw) */
+        .floating-nav {
+            position: fixed; bottom: 25px; left: 20px; right: 20px; display: flex; padding: 8px; border-radius: 30px;
+            background: rgba(15, 18, 25, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.1); z-index: 100;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.2);
+            gap: 8px;
+        }
+        
+        .nav-btn {
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 14px 0; cursor: pointer; border-radius: 24px; transition: 0.3s;
+            font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .nav-btn:active { transform: scale(0.95); }
+        
+        /* Premium Look for Leaderboard Nav Button */
+        .nav-rank-premium { background: var(--grad-premium); color: white; border: none; box-shadow: 0 5px 15px rgba(157,0,255,0.3); }
+        .nav-rank-premium i { font-size: 18px; color: var(--gold-main); filter: drop-shadow(0 0 5px rgba(255,215,0,0.8)); }
+        
+        .nav-withdraw { background: var(--grad-cyan); color: white; border: none; box-shadow: 0 5px 15px rgba(0,229,255,0.3); }
+        .nav-withdraw i { font-size: 18px; }
+
+        /* ================= PREMIUM MODALS (iOS Bottom Sheet Style) ================= */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: flex-end; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-content {
+            width: 100%; background: #0F131A; border-radius: 35px 35px 0 0; padding: 30px 24px 40px; 
+            border-top: 1px solid var(--border-glass); transform: translateY(100%); 
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; 
+            box-shadow: 0 -15px 40px rgba(0,0,0,0.7); max-height: 85vh; overflow-y: auto;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .modal-pull { width: 50px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 5px; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); }
+        .close-modal { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid var(--border-glass); color: white; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 10; transition: 0.2s; }
+        .close-modal:active { background: rgba(255,255,255,0.1); transform: scale(0.9); }
+        
+        .modal-title { font-size: 24px; font-weight: 900; margin-bottom: 25px; color: white; text-align: center; letter-spacing: 0.5px; }
+
+        /* Inputs & Buttons */
+        .input-group input { width: 100%; padding: 18px 20px; border-radius: var(--radius-lg); border: 2px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.4); color: white; font-size: 16px; font-weight: 600; outline: none; transition: 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        .input-group input:focus { border-color: var(--neon-cyan); background: rgba(0,229,255,0.02); }
+        
+        .btn-primary { width: 100%; padding: 18px; border-radius: var(--radius-lg); border: none; background: var(--grad-cyan); color: white; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 25px rgba(0, 229, 255, 0.3); transition: 0.2s; margin-top: 15px; }
+        .btn-primary:active { transform: scale(0.96); box-shadow: 0 4px 15px rgba(0, 229, 255, 0.2); }
+        .btn-primary:disabled { background: #2A3241; box-shadow: none; color: #6C7A92; cursor: not-allowed; }
+
+        /* Leaderboard Specifics */
+        .scrollable-list::-webkit-scrollbar { width: 4px; }
+        .scrollable-list::-webkit-scrollbar-track { background: transparent; }
+        .scrollable-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        .sticky-rank-bar {
+            position: sticky; bottom: -40px; left: -24px; right: -24px; width: calc(100% + 48px);
+            background: rgba(20, 25, 35, 0.95); backdrop-filter: blur(15px);
+            border-top: 2px solid var(--gold-main); padding: 15px 24px; 
+            display: flex; align-items: center; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 20;
+            animation: pulse-border 2s infinite;
+        }
+
+        /* Tabs */
+        .premium-tabs { display: flex; background: rgba(0,0,0,0.5); border-radius: 16px; margin-bottom: 20px; padding: 6px; border: 1px solid var(--border-glass); }
+        .tab { flex: 1; padding: 12px; text-align: center; color: var(--text-muted); font-size: 14px; font-weight: 700; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .tab.active { background: rgba(255,255,255,0.1); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .tab-content { display: none; animation: slideUpFade 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .tab-content.active { display: block; }
+
+        /* Copy Box */
+        .copy-box { display: flex; background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); border-radius: 16px; overflow: hidden; margin-top: 20px; padding: 6px; }
+        .copy-box input { flex-grow: 1; background: transparent; border: none; color: var(--gold-light); padding: 0 15px; outline: none; font-size: 14px; font-weight: 600; }
+        .copy-box button { background: var(--grad-premium); color: white; border: none; border-radius: 12px; padding: 12px 24px; cursor: pointer; font-weight: 800; font-size: 14px; box-shadow: 0 4px 15px rgba(255,0,122,0.3); }
+
+        /* Daily Reward Grid */
+        .daily-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px; }
+        .day-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 16px 10px; text-align: center; position: relative; overflow: hidden; transition: 0.3s; }
+        .day-title { font-size: 12px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 8px; }
+        .day-icon { font-size: 24px; margin-bottom: 10px; color: rgba(255,255,255,0.2); }
+        .day-reward { font-size: 16px; font-weight: 900; color: white; }
+
+        .day-card.active { background: rgba(0, 229, 255, 0.1); border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(0,229,255,0.15); cursor: pointer; transform: translateY(-3px); }
+        .day-card.active .day-icon { color: var(--neon-cyan); filter: drop-shadow(0 0 8px var(--neon-cyan)); animation: bounce 2s infinite; }
+        .day-card.active .day-reward { color: var(--neon-cyan); }
+
+        .day-card.claimed { border-color: rgba(0, 255, 136, 0.3); background: rgba(0, 255, 136, 0.05); }
+        .day-card.claimed .day-icon { color: #00FF88; }
+        .day-card.claimed .day-reward { color: #00FF88; opacity: 0.8;}
+
+        .day-card.locked { opacity: 0.5; filter: grayscale(1); }
+
+        .day-7-card { grid-column: span 3; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: linear-gradient(135deg, rgba(255,0,122,0.1), rgba(157,0,255,0.1)); border-color: rgba(255,0,122,0.3); }
+        .day-7-card .day-title { margin: 0; font-size: 16px; color: var(--neon-pink); }
+        .day-7-card .day-icon { margin: 0; font-size: 32px; color: var(--neon-pink); }
+        .day-7-card .day-reward { margin: 0; font-size: 28px; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .day-7-card.active { border-color: var(--neon-pink); box-shadow: 0 0 30px rgba(255,0,122,0.2); transform: translateY(-3px); }
+
+        /* Toast */
+        #toast { position: fixed; top: 20px; left: 50%; transform: translate(-50%, -20px) scale(0.9); background: rgba(20,25,35,0.95); backdrop-filter: blur(10px); border: 1px solid var(--gold-main); color: white; padding: 16px 30px; border-radius: 30px; font-size: 15px; font-weight: 700; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 20px rgba(255,215,0,0.2); z-index: 300; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+        #toast.show { transform: translate(-50%, 0) scale(1); opacity: 1; }
+
+        /* Animations */
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        @keyframes spin-slow-reverse { 100% { transform: rotate(-360deg); } }
+        @keyframes pulse-glow { 0% { transform: scale(0.9); opacity: 0.2; } 100% { transform: scale(1.1); opacity: 0.5; } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-border { 0%, 100% { border-top-color: var(--gold-dark); box-shadow: 0 -5px 15px rgba(255,215,0,0.1); } 50% { border-top-color: var(--gold-main); box-shadow: 0 -10px 30px rgba(255,215,0,0.3); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+
+
+
+        /* ── BROWSER BLOCK ── */
+        #browser-block {
+            position: fixed; inset: 0; z-index: 99999;
+            background: var(--bg-dark);
+            display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 40px 30px;
+        }
+        #browser-block.show { display: flex; }
+        .block-icon { font-size: 72px; margin-bottom: 20px; }
+        .block-title { font-size: 22px; font-weight: 900; color: white; margin-bottom: 12px; }
+        .block-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 28px; }
+        .block-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, #229ED9, #0088cc);
+            color: white; padding: 16px 28px; border-radius: 20px;
+            font-size: 16px; font-weight: 800; text-decoration: none;
+            box-shadow: 0 8px 25px rgba(0,136,204,0.4);
+        }
+
+        /* Admin UI */
+        #admin-screen { padding: 20px; z-index: 30; background: var(--bg-dark); overflow-y: auto;}
+        .admin-card { background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 20px; }
+        .list-item-admin { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.4); border-radius: 12px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); }
+
+    </style>
+
+<body>
+
+    <div id="master-wrapper">
+
+        <!-- Browser Block -->
+        <div id="browser-block">
+            <div class="block-icon">🤖</div>
+            <div class="block-title">Open in Telegram</div>
+            <div class="block-sub">This app only works inside<br>the Telegram bot.<br>Please open it via the bot button.</div>
+            <a class="block-btn" href="https://t.me/ads_sovitx_bot">
+                <i class="fab fa-telegram"></i> Open @ads_sovitx_bot
+            </a>
+        </div>
+
+        <div id="loading-screen" class="screen">
+            <div class="premium-loader"></div>
+            <h2 style="margin-top: 30px; font-weight: 900; font-size: 24px; background: var(--grad-gold); -webkit-background-clip: text; color: transparent;">Loading Wealth...</h2>
+        </div>
+
+        <div id="app-screen" class="screen hidden">
+            
+            <div class="header-section">
+                <div class="glass-card profile-row">
+                    <div class="user-info-flex">
+                        <div class="avatar-container">
+                            <div class="avatar" id="ui-avatar" title="Change DP">
+                                <span id="ui-avatar-letter">G</span>
+                                <div class="cam-overlay"><i class="fas fa-camera"></i></div>
+                            </div>
+                        </div>
+                        <div class="user-details">
+                            <h3><span id="ui-username">Guest</span> <div class="edit-badge" id="edit-name-btn"><i class="fas fa-pen"></i></div></h3>
+                            <p>Level: <span style="color:var(--gold-main); font-weight:700;">Earner</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vault-card-wrapper">
+                    <div class="vault-card">
+                        <div class="vault-header">
+                            <div>
+                                <div class="vault-title"><i class="fas fa-lock" style="color:var(--text-muted); margin-right:5px;"></i> Withdrawal Vault</div>
+                                <div class="vault-amount" id="ui-balance-text">&#8377;0</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:12px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">Goal</div>
+                                <div style="font-size:16px; font-weight:800; color:white;">&#8377;100</div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-track">
+                            <div class="progress-fill" id="ui-progress"></div>
+                        </div>
+                        
+                        <div class="vault-footer">
+                            <div class="left-txt" id="ui-left-text">Earn &#8377;100 more</div>
+                            <div class="target-txt">Target: &#8377;100</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-arena">
+                <div class="orb-wrapper" id="watch-ad-btn">
+                    <div class="orb-glow"></div>
+                    <div class="orb-ring"></div>
+                    <div class="orb-ring-2"></div>
+                    <div class="play-orb">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                
+                <div class="orb-text-wrapper">
+                    <div class="orb-title">WATCH & EARN</div>
+                    <div class="orb-subtitle" id="ad-reward-text">
+                        Get <span style="color:var(--gold-main); font-weight:800; font-size:16px;">&#8377;1</span> instantly per video
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-actions">
+                <div class="grid-card gc-bonus" id="daily-btn">
+                    <div class="icon-wrap"><i class="fas fa-calendar-check"></i></div>
+                    <h4>Daily Bonus</h4>
+                    <p>Claim Reward</p>
+                </div>
+                <div class="grid-card gc-invite" id="invite-btn">
+                    <div class="icon-wrap"><i class="fas fa-gift"></i></div>
+                    <h4>Invite Friends</h4>
+                    <p>Earn &#8377;3 per refer</p> 
+                </div>
+            </div>
+        </div>
+
+        <div class="floating-nav" id="bottom-nav-container">
+            <div class="nav-btn nav-rank-premium" id="nav-rank">
+                <i class="fas fa-trophy"></i>
+                <span>Leaderboard</span>
+            </div>
+            <div class="nav-btn nav-withdraw" id="nav-withdraw">
+                <i class="fas fa-wallet"></i>
+                <span>Withdraw</span>
+            </div>
+        </div>
+
+        <div id="admin-screen" class="screen hidden">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;">
+                <h2 style="color:white; font-weight:800;">Admin Hub</h2>
+                <button id="admin-logout" style="background:#FF007A; color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:bold;">Exit Admin</button>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+                <div class="admin-card" style="text-align:center;"><p style="color:var(--text-muted); font-size:13px; font-weight:600;">Total Users</p><h3 id="admin-total-users" style="color:white; font-size:28px; font-weight:900;">0</h3></div>
+                <div class="admin-card" style="text-align:center;"><p style="color:var(--text-muted); font-size:13px; font-weight:600;">System Balance</p><h3 id="admin-total-balance" style="color:var(--neon-cyan); font-size:28px; font-weight:900;">&#8377;0</h3></div>
+            </div>
+            <div class="admin-card">
+                <h3 style="color:white; margin-bottom:15px; font-weight:800;">Pending Withdrawals</h3>
+                <div id="admin-withdrawals-list"></div>
+            </div>
+        </div>
+
+
+        <div class="modal-overlay" id="generic-modal">
+            <div class="modal-content" id="modal-content-box">
+                <div class="modal-pull"></div>
+                <button class="close-modal" id="close-generic-modal"><i class="fas fa-times"></i></button>
+                <h3 class="modal-title" id="gm-title">Title</h3>
+                <div id="gm-body">Body</div>
+            </div>
+        </div>
+
+        <div id="toast"><i class="fas fa-check-circle" style="color:var(--gold-main); font-size:18px;"></i> <span id="toast-msg">Message</span></div>
+
+    </div> 
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getDatabase, ref, get, set, update, onValue, push, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+  apiKey: "AIzaSyBLzocO-22pXwjNg7HFG75OQzaFjbfV_0k",
+  authDomain: "watch-be6e0.firebaseapp.com",
+  databaseURL: "https://watch-be6e0-default-rtdb.firebaseio.com",
+  projectId: "watch-be6e0",
+  storageBucket: "watch-be6e0.firebasestorage.app",
+  messagingSenderId: "1044218513896",
+  appId: "1:1044218513896:web:14db4db1291a4903dcbc5d",
+  measurementId: "G-LGLJYP7QGJ"
+};
+
+
+
+        const app = initializeApp(firebaseConfig);
+        const db  = getDatabase(app);
+
+        const USERS_PATH    = 'users';
+        const WITHDRAW_PATH = 'withdrawals';
+        const REFCODES_PATH = 'refCodes';
+
+        let dbUserId        = null;
+        let userProfile     = null;
+        let profileUnsubscribe = null;
+        let tgUser          = null;   // Telegram user object
+
+
+
+        const screens = { loading: document.getElementById('loading-screen'), app: document.getElementById('app-screen'), admin: document.getElementById('admin-screen') };
+
+        function switchScreen(screenName) {
+            Object.values(screens).forEach(s => s.classList.add('hidden'));
+            if (screens[screenName]) screens[screenName].classList.remove('hidden');
+            
+            // Hide bottom nav in loading/admin
+            document.getElementById('bottom-nav-container').style.display = screenName === 'app' ? 'flex' : 'none';
+        }
+
+        function showToast(message, icon = "fas fa-bolt", color = "var(--neon-cyan)") {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="${icon}" style="color:${color}; font-size:18px;"></i> <span>${message}</span>`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function formatMoney(amount) {
+            return Math.floor(amount).toString(); 
+        }
+
+        const modals = {
+            generic: document.getElementById('generic-modal'),
+            openGeneric: (title, htmlBody) => {
+                const titleEl = document.getElementById('gm-title');
+                if(title) {
+                    titleEl.style.display = 'block';
+                    titleEl.innerHTML = title;
+                } else {
+                    titleEl.style.display = 'none'; 
+                }
+                document.getElementById('gm-body').innerHTML = htmlBody;
+                modals.generic.classList.add('active');
+            },
+            closeGeneric: () => modals.generic.classList.remove('active'),
+        };
+
+        document.getElementById('close-generic-modal').addEventListener('click', modals.closeGeneric);
+        document.getElementById('generic-modal').addEventListener('click', (e) => {
+            if(e.target === document.getElementById('generic-modal')) modals.closeGeneric();
+        });
+
+        window.switchRankTab = function(tabName) {
+            document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('btn-tab-' + tabName).classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        };
+
+        // ════════ TELEGRAM AUTH + INIT ════════
+
+        function blockBrowser() {
+            document.getElementById('browser-block').classList.add('show');
+        }
+
+        // Generate a random 8-digit referral code
+        function genRefCode() {
+            return Math.floor(10000000 + Math.random() * 90000000).toString();
+        }
+
+        async function ensureRefCode(uid) {
+            const snap = await get(ref(db, USERS_PATH + '/' + uid + '/refCode'));
+            if (snap.val()) return snap.val();
+            // Generate unique code
+            let code, exists = true;
+            while (exists) {
+                code = genRefCode();
+                const check = await get(ref(db, REFCODES_PATH + '/' + code));
+                exists = check.val() !== null;
+            }
+            await update(ref(db, USERS_PATH + '/' + uid), { refCode: code });
+            await update(ref(db, REFCODES_PATH + '/' + code), { uid: uid });
+            return code;
+        }
+
+        async function initApp() {
+            const tgApp = window.Telegram?.WebApp;
+
+            // ── Block browser — only allow Telegram WebApp ──
+            if (!tgApp || !tgApp.initDataUnsafe) {
+                blockBrowser();
+                return;
+            }
+
+            // Expand + style
+            try { tgApp.expand(); } catch(e) {}
+            try { tgApp.setHeaderColor('#05070a'); } catch(e) {}
+            try { tgApp.setBackgroundColor('#05070a'); } catch(e) {}
+
+            // Get TG user — may be null on first load, retry once
+            let tgUserObj = tgApp.initDataUnsafe?.user;
+            if (!tgUserObj) {
+                await new Promise(r => setTimeout(r, 800));
+                tgUserObj = tgApp.initDataUnsafe?.user;
+            }
+
+            // If still no user data, show app with fallback ID from localStorage
+            if (!tgUserObj) {
+                let fallback = localStorage.getItem('tg_uid');
+                if (!fallback) {
+                    fallback = 'TG_' + Date.now();
+                    localStorage.setItem('tg_uid', fallback);
+                }
+                dbUserId = fallback;
+                switchScreen('app');
+                startListeningToProfile();
+                return;
+            }
+
+            tgUser   = tgUserObj;
+            const tgId    = tgUser.id.toString();
+            dbUserId       = 'TG_' + tgId;
+            localStorage.setItem('tg_uid', dbUserId);
+
+            const startParam = tgApp.initDataUnsafe?.start_param || null;
+            const fname      = tgUser.first_name || '';
+            const lname      = tgUser.last_name  || '';
+            const fullName   = (fname + (lname ? ' ' + lname : '')).trim();
+            const photoUrl   = tgUser.photo_url  || '';
+
+            // Show app in max 2s no matter what
+            const loadTimer = setTimeout(() => switchScreen('app'), 2000);
+
+            try {
+                const userRef  = ref(db, USERS_PATH + '/' + dbUserId);
+                const snapshot = await get(userRef);
+
+                if (!snapshot.exists()) {
+                    await set(userRef, {
+                        uid: dbUserId, username: fullName || ('User_' + tgId),
+                        photoUrl: photoUrl, balance: 0, totalWithdrawn: 0,
+                        lastDailyClaim: 0, dailyStreak: 0, invites: 0,
+                        adProgress: 0, lastBalanceUpdate: Date.now(),
+                        role: 'user', createdAt: Date.now(), referredBy: null
+                    });
+
+                    // Credit referrer via 8-digit code
+                    if (startParam && /^[0-9]{8}$/.test(startParam)) {
+                        try {
+                            const codeSnap = await get(ref(db, REFCODES_PATH + '/' + startParam));
+                            if (codeSnap.exists()) {
+                                const referrerUid = codeSnap.val().uid;
+                                if (referrerUid && referrerUid !== dbUserId) {
+                                    const rSnap = await get(ref(db, USERS_PATH + '/' + referrerUid));
+                                    if (rSnap.exists()) {
+                                        const rd = rSnap.val();
+                                        await update(ref(db, USERS_PATH + '/' + referrerUid), {
+                                            balance: (rd.balance || 0) + 3,
+                                            invites: (rd.invites || 0) + 1,
+                                            lastBalanceUpdate: Date.now()
+                                        });
+                                    }
+                                    await update(userRef, { referredBy: referrerUid });
+                                }
+                            }
+                        } catch(e) { console.error('Referral:', e); }
+                    }
+                } else {
+                    const existing = snapshot.val();
+                    const updates  = {};
+                    if (fullName && (!existing.username || existing.username.startsWith('TG_') || existing.username.startsWith('Guest_'))) {
+                        updates.username = fullName;
+                    }
+                    if (photoUrl && !existing.photoUrl) updates.photoUrl = photoUrl;
+                    if (Object.keys(updates).length > 0) await update(userRef, updates);
+                }
+
+                clearTimeout(loadTimer);
+                await ensureRefCode(dbUserId);
+                startListeningToProfile();
+
+            } catch(error) {
+                console.error('initApp error:', error);
+                clearTimeout(loadTimer);
+                switchScreen('app');
+                startListeningToProfile(); // still try to listen
+            }
+        }
+
+        initApp();
+
+
+        // 24 HOUR INACTIVITY RULE
+        function checkInactivityReset() {
+            if (!userProfile || !dbUserId) return;
+            try {
+                const inactiveTimeLimit = 24 * 60 * 60 * 1000;
+                const lastUpdate = userProfile.lastBalanceUpdate || userProfile.createdAt || Date.now();
+                if (userProfile.balance > 0 && (Date.now() - lastUpdate > inactiveTimeLimit)) {
+                    update(ref(db, USERS_PATH + '/' + dbUserId), {
+                        balance: 0, adProgress: 0, lastBalanceUpdate: Date.now()
+                    });
+                }
+            } catch(e) { console.error('inactivity check:', e); }
+        }
+
+        function startListeningToProfile() {
+            if (!dbUserId) return;
+            if (profileUnsubscribe) profileUnsubscribe();
+            profileUnsubscribe = onValue(ref(db, USERS_PATH + '/' + dbUserId), (snapshot) => {
+                if (snapshot.exists()) {
+                    userProfile = snapshot.val();
+                    if (userProfile.role === 'admin') {
+                        switchScreen('admin');
+                        initAdminPanel();
+                    } else {
+                        switchScreen('app');
+                        checkInactivityReset();
+                        updateAppUI();
+                    }
+                } else {
+                    switchScreen('app');
+                }
+            }, (error) => {
+                console.error('Profile listener error:', error);
+                switchScreen('app');
+            });
+        }
+
+        let isAdOnCooldown = false;
+        let adCooldownTimer = null;
+
+        function startAdCooldown(duration = 30) {
+            isAdOnCooldown = true;
+            localStorage.setItem('lastAdWatchTime', Date.now());
+            
+            const orb = document.querySelector('.play-orb');
+            const icon = orb.querySelector('i');
+            const textElement = document.getElementById('ad-reward-text');
+            
+            orb.style.background = '#2A3241';
+            orb.style.boxShadow = 'inset 0 5px 15px rgba(0,0,0,0.5)';
+            orb.style.border = '4px solid #3E4B63';
+            icon.className = 'fas fa-hourglass-half';
+            icon.style.color = '#6C7A92';
+            
+            let timeLeft = duration;
+            textElement.innerHTML = `Next video in <span style="color:var(--neon-pink); font-weight:800; font-size:16px;">${timeLeft}s</span>`;
+            
+            adCooldownTimer = setInterval(() => {
+                timeLeft--;
+                if(timeLeft > 0) {
+                    textElement.innerHTML = `Next video in <span style="color:var(--neon-pink); font-weight:800; font-size:16px;">${timeLeft}s</span>`;
+                } else {
+                    clearInterval(adCooldownTimer);
+                    isAdOnCooldown = false;
+                    
+                    orb.style.background = 'linear-gradient(135deg, #FFE159 0%, #E29B00 100%)';
+                    orb.style.boxShadow = '0 15px 35px rgba(226, 155, 0, 0.4), inset 0 5px 15px rgba(255, 255, 255, 0.5), inset 0 -10px 20px rgba(0, 0, 0, 0.3)';
+                    orb.style.border = '4px solid rgba(255,255,255,0.2)';
+                    icon.className = 'fas fa-play';
+                    icon.style.color = '#FFF';
+                    
+                    if (userProfile.balance >= 94 && userProfile.balance < 100) {
+                        let requiredAds = 5;
+                        let bal = Math.floor(userProfile.balance);
+                        if (bal === 97) requiredAds = 10;
+                        else if (bal === 98) requiredAds = 15;
+                        else if (bal === 99) requiredAds = 20;
+
+                        let prog = userProfile.adProgress || 0;
+                        textElement.innerHTML = `Sprint: Watch ${requiredAds - prog} more to earn <span style="color:var(--gold-main); font-weight:800;">&#8377;1</span> <span style="color:var(--neon-pink); font-size:12px;">(${prog}/${requiredAds})</span>`;
+                    } else {
+                        textElement.innerHTML = `Get <span style="color:var(--gold-main); font-weight:800; font-size:16px;">&#8377;1</span> instantly per video`;
+                    }
+                }
+            }, 1000);
+        }
+
+        function checkAdCooldown() {
+            if (isAdOnCooldown) return;
+            const lastTime = localStorage.getItem('lastAdWatchTime');
+            if (lastTime) {
+                const elapsed = Math.floor((Date.now() - parseInt(lastTime)) / 1000);
+                if (elapsed < 30) startAdCooldown(30 - elapsed);
+            }
+        }
+
+        function updateAppUI() {
+            if (!userProfile) return;
+            document.getElementById('ui-username').innerHTML = userProfile.username;
+            
+            // Avatar — use TG photo_url or stored photoUrl
+            const _photoSrc = userProfile.photoUrl || (tgUser && tgUser.photo_url) || '';
+            if (_photoSrc && _photoSrc.trim() !== '') {
+                document.getElementById('ui-avatar').innerHTML = `<img src="${_photoSrc}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;"><div class="cam-overlay"><i class="fas fa-camera"></i></div>`;
+                document.getElementById('ui-avatar').style.border = "2px solid var(--gold-main)";
+            } else {
+                const _uname = userProfile.username || 'G';
+                document.getElementById('ui-avatar').innerHTML = `<span id="ui-avatar-letter">${_uname.charAt(0).toUpperCase()}</span><div class="cam-overlay"><i class="fas fa-camera"></i></div>`;
+            }
+
+            let bal = Math.floor(userProfile.balance);
+            document.getElementById('ui-balance-text').innerHTML = `&#8377;${bal}`;
+            
+            let progress = (bal / 100) * 100;
+            if (progress > 100) progress = 100;
+            document.getElementById('ui-progress').style.width = `${progress}%`;
+            
+            let leftToEarn = 100 - bal;
+            if(leftToEarn > 0) {
+                document.getElementById('ui-left-text').innerHTML = `Earn &#8377;${leftToEarn} more to unlock`;
+                document.getElementById('ui-left-text').style.color = "var(--text-muted)";
+            } else {
+                document.getElementById('ui-left-text').innerHTML = `Goal Reached! Ready to withdraw.`;
+                document.getElementById('ui-left-text').style.color = "#00FF88";
+            }
+            
+            if (!isAdOnCooldown) {
+                let requiredAds = 1;
+                if (bal >= 94 && bal <= 96) requiredAds = 5;
+                else if (bal === 97) requiredAds = 10;
+                else if (bal === 98) requiredAds = 15;
+                else if (bal === 99) requiredAds = 20;
+
+                if (requiredAds > 1 && bal < 100) {
+                    let prog = userProfile.adProgress || 0;
+                    document.getElementById('ad-reward-text').innerHTML = `Sprint: Watch ${requiredAds - prog} more to earn <span style="color:var(--gold-main); font-weight:800;">&#8377;1</span> <span style="color:var(--neon-pink); font-size:12px;">(${prog}/${requiredAds})</span>`;
+                } else {
+                    document.getElementById('ad-reward-text').innerHTML = `Get <span style="color:var(--gold-main); font-weight:800; font-size:16px;">&#8377;1</span> instantly per video`;
+                }
+            }
+            checkAdCooldown();
+        }
+
+        // --- Modals Logic ---
+        document.getElementById('ui-avatar').addEventListener('click', () => {
+            const html = `
+                <div class="input-group">
+                    <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px; text-align:center;">Upload a premium avatar to stand out on the leaderboard.</p>
+                    <div style="position: relative; margin-bottom: 20px;">
+                        <input type="file" id="new-dp-file" accept="image/*" style="display:none;">
+                        <label for="new-dp-file" style="display:block; padding: 20px; background: rgba(0,229,255,0.05); border: 2px dashed var(--neon-cyan); border-radius: var(--radius-xl); text-align: center; color: var(--neon-cyan); cursor: pointer; font-weight: 700; transition: 0.3s;">
+                            <i class="fas fa-cloud-upload-alt" style="margin-right: 8px; font-size: 24px; display:block; margin-bottom:10px;"></i> Select Image
+                        </label>
+                        <p id="file-name-display" style="font-size:14px; color:white; font-weight: 600; text-align:center; margin-top:15px;"></p>
+                    </div>
+                    <button class="btn-primary" id="save-dp-btn" disabled>Save Avatar</button>
+                </div>`;
+                
+            modals.openGeneric("Profile Picture", html);
+            
+            setTimeout(() => {
+                let base64Image = '';
+                const fileInput = document.getElementById('new-dp-file');
+                const saveBtn = document.getElementById('save-dp-btn');
+                const fileNameDisplay = document.getElementById('file-name-display');
+
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    fileNameDisplay.innerHTML = `<i class="fas fa-image" style="color:var(--gold-main); margin-right:5px;"></i> ${file.name}`;
+                    saveBtn.disabled = true;
+                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const canvas = document.createElement('canvas');
+                            const MAX_SIZE = 150; 
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                            } else {
+                                if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            base64Image = canvas.toDataURL('image/jpeg', 0.7); 
+                            
+                            saveBtn.disabled = false;
+                            saveBtn.innerHTML = 'Save Avatar';
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                saveBtn.addEventListener('click', async () => {
+                    if (!base64Image) return;
+                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                    saveBtn.disabled = true;
+                    try {
+                        await update(ref(db, USERS_PATH + '/' + dbUserId), { photoUrl: base64Image });
+                        modals.closeGeneric(); 
+                        showToast("Avatar Updated Successfully!", "fas fa-check-circle", "#00FF88");
+                    } catch(err) {
+                        showToast("Error saving picture", "fas fa-times", "#FF4757");
+                        saveBtn.innerHTML = 'Save Avatar';
+                        saveBtn.disabled = false;
+                    }
+                });
+            }, 100);
+        });
+
+        document.getElementById('edit-name-btn').addEventListener('click', () => {
+            const html = `<div class="input-group"><input type="text" id="new-name-input" value="${userProfile.username}" style="margin-bottom: 20px;"><button class="btn-primary" id="save-name-btn">Update Name</button></div>`;
+            modals.openGeneric("Edit Display Name", html);
+            setTimeout(() => {
+                document.getElementById('save-name-btn').addEventListener('click', async () => {
+                    const newName = document.getElementById('new-name-input').value.trim();
+                    if(!newName) return;
+                    document.getElementById('save-name-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                    const newRole = newName.toLowerCase() === 'admin' ? 'admin' : 'user';
+                    await update(ref(db, USERS_PATH + '/' + dbUserId), { username: newName, role: newRole });
+                    modals.closeGeneric(); showToast("Name Updated!", "fas fa-check", "#00FF88");
+                });
+            }, 100);
+        });
+
+        // Ad Logic
+        document.getElementById('watch-ad-btn').addEventListener('click', () => {
+            if (!userProfile || !dbUserId) return showToast("Please wait, loading...", "fas fa-spinner fa-spin", "var(--neon-cyan)");
+            if (isAdOnCooldown) return showToast("&#9203; Wait for the timer to finish!", "fas fa-clock", "var(--gold-main)");
+
+            if (typeof show_10732964 === 'function') {
+                showToast("Loading Premium Video...", "fas fa-spinner fa-spin", "var(--neon-cyan)");
+                show_10732964().then(async () => {
+                    let bal = Math.floor(userProfile.balance);
+                    let newBalance = userProfile.balance;
+                    let currentProgress = userProfile.adProgress || 0;
+                    let waitTime = 30; 
+                    let increment = 1; 
+
+                    let requiredAds = 1;
+                    if (bal >= 94 && bal <= 96) requiredAds = 5;
+                    else if (bal === 97) requiredAds = 10;
+                    else if (bal === 98) requiredAds = 15;
+                    else if (bal === 99) requiredAds = 20;
+
+                    if (requiredAds > 1 && bal < 100) {
+                        currentProgress++;
+                        if (currentProgress >= requiredAds) {
+                            newBalance += increment;
+                            currentProgress = 0;
+                            waitTime = 30; 
+                            showToast(`🎉 Epic! You earned &#8377;${increment}`, "fas fa-gem", "var(--gold-main)");
+                        } else {
+                            waitTime = 5; 
+                            showToast(`&#9989; Video ${currentProgress}/${requiredAds} done! Keep going.`, "fas fa-check-circle", "#00FF88");
+                        }
+                    } else {
+                        newBalance += increment;
+                        waitTime = 30;
+                        showToast(`🎉 Awesome! Earned &#8377;${increment}`, "fas fa-gem", "var(--gold-main)");
+                    }
+                    
+                    await update(ref(db, USERS_PATH + '/' + dbUserId), { 
+                        balance: newBalance, 
+                        adProgress: currentProgress,
+                        lastBalanceUpdate: Date.now() 
+                    });
+                    
+                    startAdCooldown(waitTime);
+                }).catch((e) => showToast("Ad Closed or Not Ready.", "fas fa-exclamation-circle", "#FF4757"));
+            } else showToast("Ad network loading... Try again.", "fas fa-wifi", "#FF4757");
+        });
+
+        // Daily Bonus Logic
+        document.getElementById('daily-btn').addEventListener('click', () => {
+            if (!userProfile) return;
+            
+            const now = Date.now();
+            const msInDay = 24 * 60 * 60 * 1000;
+            let streak = userProfile.dailyStreak || 0;
+            let lastClaim = userProfile.lastDailyClaim || 0;
+            
+            if (lastClaim > 0 && (now - lastClaim > 2 * msInDay)) streak = 0;
+            
+            let isClaimable = (now - lastClaim > msInDay) || lastClaim === 0;
+            const baseRewards = [5, 6, 7, 8, 9, 10, 15]; 
+            
+            let html = '<div class="daily-grid">';
+            
+            for(let i=0; i<7; i++) {
+                let stateClass = '';
+                let iconHtml = '';
+                let actualReward = userProfile.balance >= 80 ? 1 : baseRewards[i];
+                let textStr = `&#8377;${actualReward}`;
+                let isSpecial = (i === 6); 
+
+                if (i < streak) {
+                    stateClass = 'claimed';
+                    iconHtml = '<i class="fas fa-check-circle"></i>';
+                } else if (i === streak) {
+                    if (isClaimable) {
+                        stateClass = 'active';
+                        iconHtml = isSpecial ? '<i class="fas fa-gift"></i>' : '<i class="fas fa-unlock-alt"></i>';
+                    } else {
+                        stateClass = 'locked wait';
+                        let hoursLeft = Math.ceil((msInDay - (now - lastClaim)) / (1000 * 60 * 60));
+                        iconHtml = `<div style="font-size:11px; font-weight:800;"><i class="fas fa-clock"></i> ${hoursLeft}h</div>`;
+                    }
+                } else {
+                    stateClass = 'locked';
+                    iconHtml = '<i class="fas fa-lock"></i>';
+                }
+
+                let extraClass = isSpecial ? 'day-7-card' : '';
+                
+                if (!isSpecial) {
+                    html += `<div class="day-card ${stateClass} ${extraClass}" ${stateClass === 'active' ? `onclick="window.claimDailyReward(${i}, ${actualReward})"` : ''}><div class="day-title">Day ${i+1}</div><div class="day-icon">${iconHtml}</div><div class="day-reward">${textStr}</div></div>`;
+                } else {
+                    html += `<div class="day-card ${stateClass} ${extraClass}" ${stateClass === 'active' ? `onclick="window.claimDailyReward(${i}, ${actualReward})"` : ''}><div><div class="day-title" style="text-align:left;">Day 7 (Mega)</div><div class="day-reward" style="text-align:left;">${textStr}</div></div><div class="day-icon">${iconHtml}</div></div>`;
+                }
+            }
+            
+            html += `</div><p style="font-size:12px; color:var(--text-muted); text-align:center; margin-top:20px; line-height:1.5; padding: 0 10px;">Check in for 7 consecutive days to get massive rewards. Missing a day resets progress to Day 1.</p>`;
+            modals.openGeneric("Daily Check-in Bonus", html);
+        });
+
+        // ========== FIX: DAILY CLAIM FUNCTION ==========
+        window.claimDailyReward = async (dayIndex, amount) => {
+            modals.closeGeneric();
+            showToast("Claiming Bonus...", "fas fa-spinner fa-spin", "var(--neon-cyan)");
+            
+            if (!userProfile) return;
+            
+            let newBalance = Math.floor(userProfile.balance + amount);
+            let newStreak = dayIndex + 1; 
+            if (newStreak >= 7) newStreak = 0; 
+            
+            try {
+                await update(ref(db, USERS_PATH + '/' + dbUserId), { 
+                    balance: newBalance,
+                    dailyStreak: newStreak,
+                    lastDailyClaim: Date.now(),
+                    lastBalanceUpdate: Date.now()
+                });
+                showToast(`🎉 Claimed &#8377;${amount} Daily Bonus!`, "fas fa-gem", "var(--gold-main)");
+            } catch (err) {
+                showToast("Error claiming bonus", "fas fa-times", "#FF4757");
+            }
+        };
+
+        // ========== BOT GENERATION FUNCTIONS ==========
+        const vipProfiles = [
+            { name: "&#9532;ᶦϻ&#7655;🦋&#8415;&#8795;&#8413;🎀&#44013; shivi🦋&#8415;&#8795;&#8413;🐼", dp: "https://img.sanishtech.com/u/7aeb434d3333478d4bb0430800693a77.jpg" },
+            { name: "Ajay Mandloi", dp: "https://img.sanishtech.com/u/492bdcd2c262a5efa892242cf446a80b.jpeg" },
+            { name: "UP wale", dp: "https://img.sanishtech.com/u/140d54ae5daa55e2395997b9c56d3657.jpeg" },
+            { name: "Priyanka", dp: "https://img.sanishtech.com/u/caf4b9fbc6c9c00be51cbeec01cf77a4.jpeg" },
+            { name: "Arvind Baghel", dp: "https://img.sanishtech.com/u/391250a7108f528adf9e7a12d0a3afa0.jpeg" },
+            { name: "Priya", dp: "https://img.sanishtech.com/u/c2bdd7c34ec668c32ed8b476a6a18cdd.jpg" }
+        ];
+
+        // --- TOP REFER 20 STATIC BOTS (Fixed Gaps, Hourly Increment) ---
+        function getTopReferBots() {
+            const bots = [];
+            const baseRefers = [930, 876, 788, 712, 654, 598, 560, 521, 489, 450, 412, 380, 345, 310, 275, 240, 215, 185, 150, 120];
+            
+            // Fixed formula to prevent inflating to millions. Uses the current hour of the day.
+            const currentHour = new Date().getHours();
+            const hourlyBoost = currentHour * 10;
+            
+            const staticProfiles = [
+                { name: "&#9532;ᶦϻ&#7655;🦋&#8415;&#8795;&#8413;🎀&#44013; shivi🦋&#8415;&#8795;&#8413;🐼", dp: "https://img.sanishtech.com/u/7aeb434d3333478d4bb0430800693a77.jpg" }, // R1
+                { name: "Guest_727", dp: "" }, // R2
+                { name: "Rahul", dp: "" }, // R3
+                { name: "Ajay Mandloi", dp: "https://img.sanishtech.com/u/492bdcd2c262a5efa892242cf446a80b.jpeg" }, // R4
+                { name: "Guest_891", dp: "" }, // R5
+                { name: "Sneha", dp: "" }, // R6
+                { name: "UP wale", dp: "https://img.sanishtech.com/u/140d54ae5daa55e2395997b9c56d3657.jpeg" }, // R7
+                { name: "Aman", dp: "" }, // R8
+                { name: "Guest_421", dp: "" }, // R9
+                { name: "Priyanka", dp: "https://img.sanishtech.com/u/caf4b9fbc6c9c00be51cbeec01cf77a4.jpeg" }, // R10
+                { name: "Karan", dp: "" }, // R11
+                { name: "Arvind Baghel", dp: "https://img.sanishtech.com/u/391250a7108f528adf9e7a12d0a3afa0.jpeg" }, // R12
+                { name: "Pooja", dp: "" }, // R13
+                { name: "Guest_553", dp: "" }, // R14
+                { name: "Priya", dp: "https://img.sanishtech.com/u/c2bdd7c34ec668c32ed8b476a6a18cdd.jpg" }, // R15
+                { name: "Vikram", dp: "" }, // R16
+                { name: "Ravina", dp: "https://img.sanishtech.com/u/de5491521ce7f194cdd32cb5e27914d6.jpeg" }, // R17
+                { name: "Anjali", dp: "" }, // R18
+                { name: "Nitin", dp: "" }, // R19
+                { name: "Shivam", dp: "" } // R20
+            ];
+
+            for (let i = 0; i < 20; i++) {
+                bots.push({ 
+                    uid: 'refer_bot_' + i, 
+                    username: staticProfiles[i].name, 
+                    balance: baseRefers[i] + hourlyBoost, 
+                    photoUrl: staticProfiles[i].dp, 
+                    role: 'user' 
+                });
+            }
+            return bots;
+        }
+
+        // --- DYNAMIC BOTS FOR TODAY (Progressive Growth 6 AM - 12 AM) ---
+        function getDynamicBots() {
+            const bots = [];
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            
+            let activeMinutes = 0;
+            if (hours >= 6) {
+                activeMinutes = ((hours - 6) * 60) + minutes;
+            } else {
+                activeMinutes = 18 * 60; // Max out the progress
+            }
+
+            const top20Config = [
+                { name: vipProfiles[0].name, dp: vipProfiles[0].dp, incInterval: 10, incAmount: 10 }, 
+                { name: "Rahul", dp: "", incInterval: 10, incAmount: 8 },  
+                { name: vipProfiles[1].name, dp: vipProfiles[1].dp, incInterval: 10, incAmount: 7 }, 
+                { name: "Sneha", dp: "", incInterval: 15, incAmount: 9 },  
+                { name: vipProfiles[2].name, dp: vipProfiles[2].dp, incInterval: 15, incAmount: 8 }, 
+                { name: "Aman", dp: "", incInterval: 20, incAmount: 9 },  
+                { name: vipProfiles[3].name, dp: vipProfiles[3].dp, incInterval: 22, incAmount: 9 }, 
+                { name: "Pooja", dp: "", incInterval: 24, incAmount: 9 },  
+                { name: vipProfiles[4].name, dp: vipProfiles[4].dp, incInterval: 26, incAmount: 9 }, 
+                { name: "Vikram", dp: "", incInterval: 30, incAmount: 9 }, 
+                { name: vipProfiles[5].name, dp: vipProfiles[5].dp, incInterval: 35, incAmount: 9 }, 
+                { name: "Anjali", dp: "", incInterval: 40, incAmount: 9 }, 
+                { name: "Nitin", dp: "", incInterval: 45, incAmount: 9 }, 
+                { name: "Shivam", dp: "", incInterval: 50, incAmount: 9 }, 
+                { name: "Kajal", dp: "", incInterval: 55, incAmount: 9 }, 
+                { name: "Raja", dp: "", incInterval: 60, incAmount: 9 }, 
+                { name: "Riya", dp: "", incInterval: 65, incAmount: 9 }, 
+                { name: "Ajay", dp: "", incInterval: 70, incAmount: 9 }, 
+                { name: "Sonia", dp: "", incInterval: 75, incAmount: 9 }, 
+                { name: "Karan", dp: "", incInterval: 80, incAmount: 9 }  
+            ];
+
+            for (let i = 0; i < 20; i++) {
+                let conf = top20Config[i];
+                let score = Math.floor((activeMinutes / conf.incInterval) * conf.incAmount);
+                score += (20 - i) * 2; 
+                
+                bots.push({ 
+                    uid: 'top_bot_' + i, 
+                    username: conf.name, 
+                    balance: score, 
+                    photoUrl: conf.dp, 
+                    role: 'user' 
+                });
+            }
+
+            const fillerNames = [
+                { name: "money lover", dp: "" },
+                { name: "Guest_" + (1000 + Math.floor(Math.random() * 900)), dp: "" },
+                { name: "Mayur", dp: "" },
+                { name: "Guest_" + (2000 + Math.floor(Math.random() * 900)), dp: "" },
+                { name: "Guest_" + (3000 + Math.floor(Math.random() * 900)), dp: "" },
+                { name: "Rajesh", dp: "" },
+                { name: "Neha Vlog", dp: "" },
+                { name: "Guest_" + (4000 + Math.floor(Math.random() * 900)), dp: "" },
+                { name: "Suresh", dp: "" },
+                { name: "Guest_" + (5000 + Math.floor(Math.random() * 900)), dp: "" }
+            ];
+
+            let baseFillerScore = Math.floor((activeMinutes / 90) * 8); 
+            for(let j=0; j<10; j++) {
+                let score = Math.max(1, baseFillerScore - (j * 3));
+                bots.push({
+                    uid: 'filler_bot_' + j,
+                    username: fillerNames[j].name,
+                    balance: score,
+                    photoUrl: fillerNames[j].dp,
+                    role: 'user'
+                });
+            }
+
+            return bots;
+        }
+
+        function generateRankListHTML(usersArray, isRefer = false) {
+            let html = '<div class="scrollable-list" style="max-height: 55vh; overflow-y: auto; padding-bottom: 50px;">';
+            
+            usersArray.forEach((u, index) => {
+                const isMe = u.uid === dbUserId;
+                let specialStyle = '';
+                let rankBadge = '';
+
+                if (index === 0) {
+                    specialStyle = 'background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(20,25,35,0.8) 100%); border: 1px solid var(--border-gold); box-shadow: var(--shadow-gold); transform: scale(1.02); margin-bottom: 12px;';
+                    rankBadge = '<i class="fas fa-crown" style="color:var(--gold-main); font-size: 22px; filter: drop-shadow(0 0 5px rgba(255,215,0,0.8));"></i>';
+                } else if (index === 1) {
+                    specialStyle = 'background: linear-gradient(135deg, rgba(192,192,192,0.1) 0%, rgba(20,25,35,0.8) 100%); border: 1px solid rgba(192,192,192,0.3); margin-bottom: 10px;';
+                    rankBadge = '<i class="fas fa-medal" style="color:#C0C0C0; font-size: 20px;"></i>';
+                } else if (index === 2) {
+                    specialStyle = 'background: linear-gradient(135deg, rgba(205,127,50,0.1) 0%, rgba(20,25,35,0.8) 100%); border: 1px solid rgba(205,127,50,0.3); margin-bottom: 10px;';
+                    rankBadge = '<i class="fas fa-medal" style="color:#CD7F32; font-size: 20px;"></i>';
+                } else {
+                    specialStyle = isMe ? 'background: rgba(0,229,255,0.05); border: 1px solid var(--neon-cyan);' : 'background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass);';
+                    rankBadge = `<span style="font-size: 15px; font-weight: 800; color: var(--text-muted);">${index + 1}</span>`;
+                }
+
+                let dpHtml = u.photoUrl && u.photoUrl.trim() !== '' 
+                    ? `<img src="${u.photoUrl}" referrerpolicy="no-referrer" style="width:42px; height:42px; border-radius:12px; object-fit:cover; margin-right:15px; border: 1px solid rgba(255,255,255,0.1);">` 
+                    : `<div style="width:42px; height:42px; border-radius:12px; background:var(--grad-premium); display:flex; justify-content:center; align-items:center; margin-right:15px; font-size:18px; font-weight:bold; color:white; border: 1px solid rgba(255,255,255,0.1);">${u.username.charAt(0).toUpperCase()}</div>`;
+                
+                let displayValue = isRefer ? `${formatMoney(u.balance)} <i class="fas fa-users" style="font-size: 12px; color: var(--neon-cyan); margin-left:2px;"></i>` : `&#8377;${formatMoney(u.balance)}`;
+
+                html += `
+                    <div style="${specialStyle} padding: 14px 20px; border-radius: var(--radius-lg); margin-bottom: 8px; display: flex; align-items: center; transition: 0.3s;">
+                        <div style="width: 30px; text-align: center; margin-right: 10px;">${rankBadge}</div>
+                        ${dpHtml}
+                        <div style="flex-grow: 1;">
+                            <div style="font-size: 15px; font-weight: 700; color: white; margin-bottom: 2px;">
+                                ${u.username} ${isMe ? '<span style="color:var(--neon-cyan); font-size:11px; margin-left: 5px; background:rgba(0,229,255,0.1); padding:2px 6px; border-radius:4px;">You</span>' : ''}
+                            </div>
+                        </div>
+                        <div style="font-weight: 900; font-size: 16px; color: var(--gold-main); filter: drop-shadow(0 0 5px rgba(255,215,0,0.3));">${displayValue}</div>
+                    </div>`;
+            });
+            html += '</div>';
+            return html;
+        }
+
+        // --- LEADERBOARD CLICK EVENT (Top 20 Bots + Top 10 Mix) ---
+        document.getElementById('nav-rank').addEventListener('click', async () => {
+            modals.openGeneric("", `<div style="text-align:center; padding:40px;"><div class="premium-loader" style="margin: 0 auto; border-top-color: var(--neon-cyan); box-shadow: var(--shadow-cyan);"></div></div>`);
+            try {
+                const snapshot = await get(ref(db, USERS_PATH));
+                let activeRealUsers = [];
+                let currentUserDataRaw = {username: 'You', balance: 0, photoUrl: ''}; 
+                const inactiveTimeLimit = 24 * 60 * 60 * 1000;
+                
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    for (let key in data) { 
+                        if (data[key].role !== 'admin') {
+                            let rankUser = { ...data[key] };
+                            
+                            const lastUpd = rankUser.lastBalanceUpdate || rankUser.createdAt || Date.now();
+                            if (Date.now() - lastUpd > inactiveTimeLimit) {
+                                rankUser.balance = 0;
+                            }
+                            
+                            if (rankUser.balance >= 100) {
+                                rankUser.balance = 0; 
+                            }
+
+                            if (rankUser.uid === dbUserId) {
+                                currentUserDataRaw = { ...rankUser };
+                            }
+                            
+                            if (rankUser.balance > 0) { 
+                                activeRealUsers.push(rankUser); 
+                            }
+                        }
+                    }
+                }
+
+                // Get 30 Generated Bots
+                const smartBots = getDynamicBots();
+                
+                // Mix Real users and ALL bots to fight for the ultimate Top 30
+                let allCompetitors = [...activeRealUsers, ...smartBots];
+                allCompetitors.sort((a, b) => b.balance - a.balance);
+
+                // Create the final Top 30 List (Real user can now become Rank 1 if score is higher)
+                let finalTodayList = allCompetitors.slice(0, 30);
+
+                const topReferBots = getTopReferBots(); 
+
+                // FIX: STICKY RANK BAR FOR REAL USER
+                let currentUserRankIndex = finalTodayList.findIndex(u => u.uid === dbUserId);
+
+                let stickyHtml = '';
+                let currentUserRank;
+                
+                if (currentUserRankIndex !== -1 && currentUserRankIndex < 30) {
+                    currentUserRank = currentUserRankIndex + 1;
+                } else {
+                    currentUserRank = 107 - Math.floor(currentUserDataRaw.balance);
+                    if(currentUserRank < 31) currentUserRank = 31; 
+                }
+
+                let dpHtml = currentUserDataRaw.photoUrl && currentUserDataRaw.photoUrl.trim() !== '' 
+                    ? `<img src="${currentUserDataRaw.photoUrl}" referrerpolicy="no-referrer" style="width:38px; height:38px; border-radius:50%; object-fit:cover; margin-right:12px; border: 1px solid rgba(255,255,255,0.1);">` 
+                    : `<div style="width:38px; height:38px; border-radius:50%; background:var(--gradient-subtle); display:flex; justify-content:center; align-items:center; margin-right:12px; font-size:16px; font-weight:bold; color:var(--neon-cyan); border: 1px solid rgba(0, 240, 255, 0.3);">${currentUserDataRaw.username.charAt(0).toUpperCase()}</div>`;
+                
+                stickyHtml = `
+                    <div class="sticky-rank-bar">
+                        <div style="width: 40px; text-align: center; margin-right: 5px; font-size: 16px; font-weight: 900; color: var(--gold-main);">#${currentUserRank}</div>
+                        ${dpHtml}
+                        <div style="flex-grow: 1; font-size: 16px; font-weight: 800; color: white;">
+                            ${currentUserDataRaw.username} <span style="color:var(--text-muted); font-size:12px; font-weight:600;"><br>Your Rank</span>
+                        </div>
+                        <div style="font-weight: 900; font-size: 18px; color: var(--gold-main);">&#8377;${formatMoney(currentUserDataRaw.balance)}</div>
+                    </div>
+                `;
+
+                let todayHtml = generateRankListHTML(finalTodayList, false);
+                let referHtml = generateRankListHTML(topReferBots, true);
+
+                let modalHtml = `
+                    <div class="premium-tabs">
+                        <div class="tab active" id="btn-tab-today" onclick="switchRankTab('today')">Today's Top 30</div>
+                        <div class="tab" id="btn-tab-refer" onclick="switchRankTab('refer')">Top Refer</div>
+                    </div>
+                    <div id="tab-today" class="tab-content active" style="position:relative;">
+                        ${todayHtml}
+                        ${stickyHtml}
+                    </div>
+                    <div id="tab-refer" class="tab-content" style="position:relative;">
+                        ${referHtml}
+                    </div>
+                `;
+                
+                modals.openGeneric("", modalHtml); 
+            } catch (error) { modals.openGeneric("Error", "<p style='color:white; text-align:center;'>Could not load leaderboard.</p>"); }
+        });
+
+        // Invite System
+        document.getElementById('invite-btn').addEventListener('click', async () => {
+            if (!userProfile) return;
+            // Use refCode from already-loaded userProfile
+            const _refCode = userProfile.refCode || dbUserId;
+            const inviteLink = `https://t.me/watch_ads_sovitx_bot?start=${_refCode}`;
+            const totalInvites = userProfile.invites || 0;
+            const totalEarned = formatMoney(totalInvites * 3);
+            
+            const html = `
+                <div style="text-align:center;">
+                    <div style="width: 90px; height: 90px; background: rgba(255,0,122,0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; box-shadow: 0 0 30px rgba(255,0,122,0.2);">
+                        <i class="fas fa-gift" style="font-size: 40px; color: var(--neon-pink);"></i>
+                    </div>
+                    <h3 style="color: white; font-size: 20px; font-weight: 800; margin-bottom: 10px;">Invite & Earn Massive</h3>
+                    <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 25px; line-height: 1.5;">Share with friends and earn <strong style="color:var(--gold-main); font-size:18px;">&#8377;3</strong> instantly for every successful invite!</p>
+                    
+                    <div class="copy-box">
+                        <input type="text" id="ref-link" value="${inviteLink}" readonly>
+                        <button id="copy-btn">Copy Link</button>
+                    </div>
+
+                    <div style="margin-top: 35px; padding-top: 25px; border-top: 1px solid var(--border-glass); display: flex; justify-content: space-around;">
+                        <div style="text-align:center;">
+                            <div style="font-size: 28px; font-weight: 900; color: white; margin-bottom: 5px;">${totalInvites}</div>
+                            <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Total Friends</div>
+                        </div>
+                        <div style="width: 1px; background: var(--border-glass);"></div>
+                        <div style="text-align:center;">
+                            <div style="font-size: 28px; font-weight: 900; color: var(--gold-main); margin-bottom: 5px;">&#8377;${totalEarned}</div>
+                            <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Referral Earn</div>
+                        </div>
+                    </div>
+                </div>`;
+            modals.openGeneric("", html);
+            setTimeout(() => {
+                document.getElementById('copy-btn').addEventListener('click', () => {
+                    document.getElementById("ref-link").select();
+                    document.execCommand("copy");
+                    document.getElementById('copy-btn').innerHTML = "Copied!";
+                    document.getElementById('copy-btn').style.background = "#00FF88";
+                    document.getElementById('copy-btn').style.color = "#000";
+                    showToast("Link Copied Successfully!", "fas fa-check", "#00FF88");
+                    setTimeout(() => {
+                        document.getElementById('copy-btn').innerHTML = "Copy Link";
+                        document.getElementById('copy-btn').style.background = "var(--grad-premium)";
+                        document.getElementById('copy-btn').style.color = "#FFF";
+                    }, 2000);
+                });
+            }, 100);
+        });
+
+        // Withdraw System (Updated with 5 Invites Condition)
+        document.getElementById('nav-withdraw').addEventListener('click', async () => {
+            if (!userProfile) return;
+            let requiredMore = Math.floor(100 - userProfile.balance);
+            let totalInvites = userProfile.invites || 0;
+            let statusMessage = '', formFields = '';
+            // Use refCode from already-loaded userProfile
+            const _refCode = userProfile.refCode || dbUserId;
+            const inviteLink = `https://t.me/watch_ads_sovitx_bot?start=${_refCode}`;
+
+            if(requiredMore > 0) {
+                // Condition 1: Balance is less than 100
+                statusMessage = `<div style="background: rgba(255, 71, 87, 0.1); border: 1px solid rgba(255, 71, 87, 0.3); padding: 15px; border-radius: 12px; margin-bottom: 25px;">
+                    <p style="color:#FF4757; font-size:15px; font-weight:700;">Earn &#8377;${requiredMore} more to unlock withdrawal.</p>
+                </div>`;
+                formFields = `<div class="input-group" style="opacity: 0.5; pointer-events: none;"><input type="text" placeholder="Enter UPI ID / Bank" style="margin-bottom: 20px;" disabled><button class="btn-primary" disabled><i class="fas fa-lock"></i> Locked</button></div>`;
+            } else if (totalInvites < 5) {
+                // Condition 2: Balance is 100+ but Invites are less than 5
+                let neededInvites = 5 - totalInvites;
+                statusMessage = `
+                <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); padding: 15px; border-radius: 12px; margin-bottom: 25px;">
+                    <p style="color:var(--gold-main); font-size:16px; font-weight:800; margin-bottom: 8px;"><i class="fas fa-exclamation-triangle"></i> Almost There!</p>
+                    <p style="color:white; font-size:14px; font-weight:600;">You need to invite <b>${neededInvites}</b> more active friends to unlock your withdrawal.</p>
+                    <p style="color:var(--text-muted); font-size:12px; margin-top: 5px;">Your current invites: <span style="color:white;">${totalInvites}/5</span></p>
+                </div>`;
+                
+                // Show invite link inside the withdraw modal
+                formFields = `
+                    <div style="text-align:left; margin-bottom: 10px; font-size: 13px; color: var(--text-muted); font-weight: 600;">Your Invite Link:</div>
+                    <div class="copy-box" style="margin-top: 0; margin-bottom: 20px;">
+                        <input type="text" id="withdraw-ref-link" value="${inviteLink}" readonly>
+                        <button id="withdraw-copy-btn" style="padding: 12px 15px;">Copy</button>
+                    </div>
+                    <div class="input-group" style="opacity: 0.5; pointer-events: none;">
+                        <button class="btn-primary" disabled><i class="fas fa-lock"></i> Complete Invites First</button>
+                    </div>`;
+            } else {
+                // Condition 3: Both Balance and Invites are fulfilled
+                statusMessage = `<div style="background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); padding: 15px; border-radius: 12px; margin-bottom: 25px;">
+                    <p style="color:#00FF88; font-size:15px; font-weight:700;"><i class="fas fa-check-circle"></i> Awesome! You are eligible to withdraw.</p>
+                </div>`;
+                formFields = `<div class="input-group"><input type="text" id="upi-input" placeholder="Enter UPI ID or Bank Details" style="margin-bottom: 20px;"><button class="btn-primary" id="submit-withdraw">Submit Request</button></div>`;
+            }
+
+            const html = `
+                <div style="text-align:center;">
+                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Current Balance</div>
+                    <div style="font-size:48px; font-weight:900; color:var(--gold-main); margin-bottom:25px; text-shadow: 0 0 20px rgba(255,215,0,0.3); line-height:1;">&#8377;${formatMoney(userProfile.balance)}</div>
+                    ${statusMessage}
+                    ${formFields}
+                </div>`;
+            
+            modals.openGeneric("Withdraw Money", html);
+            
+            // Handle Copy Link button if in Invite state
+            if (requiredMore <= 0 && totalInvites < 5) {
+                setTimeout(() => {
+                    document.getElementById('withdraw-copy-btn').addEventListener('click', () => {
+                        document.getElementById("withdraw-ref-link").select();
+                        document.execCommand("copy");
+                        document.getElementById('withdraw-copy-btn').innerHTML = "Copied!";
+                        document.getElementById('withdraw-copy-btn').style.background = "#00FF88";
+                        document.getElementById('withdraw-copy-btn').style.color = "#000";
+                        showToast("Invite Link Copied!", "fas fa-check", "#00FF88");
+                        setTimeout(() => {
+                            document.getElementById('withdraw-copy-btn').innerHTML = "Copy";
+                            document.getElementById('withdraw-copy-btn').style.background = "var(--grad-premium)";
+                            document.getElementById('withdraw-copy-btn').style.color = "#FFF";
+                        }, 2000);
+                    });
+                }, 100);
+            }
+            
+            // Handle actual withdraw submission
+            if(requiredMore <= 0 && totalInvites >= 5) {
+                setTimeout(() => {
+                    document.getElementById('submit-withdraw').addEventListener('click', async () => {
+                        const upi = document.getElementById('upi-input').value.trim();
+                        if(!upi) return showToast("Payment details are required!", "fas fa-exclamation", "#FF4757");
+                        const btn = document.getElementById('submit-withdraw');
+                        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...'; btn.disabled = true;
+                        try {
+                            await push(ref(db, WITHDRAW_PATH), { uid: dbUserId, username: userProfile.username, amount: userProfile.balance, paymentDetails: upi, status: 'pending', timestamp: Date.now() });
+                            await update(ref(db, USERS_PATH + '/' + dbUserId), { balance: 0, totalWithdrawn: Math.floor(userProfile.totalWithdrawn + userProfile.balance), lastBalanceUpdate: Date.now() });
+                            modals.closeGeneric(); showToast("Request Sent Successfully!", "fas fa-check-circle", "#00FF88");
+                                        } catch (error) { showToast("Error processing request", "fas fa-times", "#FF4757"); btn.innerText = "Submit Request"; btn.disabled = false; }
+                    });
+                }, 100);
+            }
+        });
+
+        // Admin Panel Logic
+        function initAdminPanel() {
+            onValue(ref(db, USERS_PATH), (snap) => {
+                let totalUsers = 0, totalBalance = 0;
+                if(snap.exists()) {
+                    const data = snap.val();
+                    for(let k in data) { if(data[k].role !== 'admin') { totalUsers++; totalBalance += data[k].balance; } }
+                }
+                document.getElementById('admin-total-users').innerHTML = totalUsers;
+                document.getElementById('admin-total-balance').innerHTML = `&#8377;${formatMoney(totalBalance)}`;
+            });
+            onValue(ref(db, WITHDRAW_PATH), (snap) => {
+                let html = '';
+                if(snap.exists()) {
+                    const data = snap.val();
+                    for(let id in data) {
+                        const w = data[id];
+                        if(w.status === 'pending') {
+                            html += `
+                            <div class="list-item-admin">
+                                <div>
+                                    <p style="font-weight:700; font-size:16px; color:white; margin-bottom:4px;">${w.username} - <span style="color:var(--gold-main)">&#8377;${formatMoney(w.amount)}</span></p>
+                                    <span style="color:var(--text-muted); font-size:13px;">${w.paymentDetails}</span>
+                                </div>
+                                <button style="background:var(--grad-cyan); color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer;" onclick="window.resolveWithdraw('${id}', 'approve', '${w.uid}', ${w.amount})">Clear</button>
+                            </div>`;
+                        }
+                    }
+                }
+                document.getElementById('admin-withdrawals-list').innerHTML = html || '<p style="text-align:center; color:var(--text-muted); padding:20px;">No pending requests.</p>';
+            });
+        }
+
+        window.resolveWithdraw = async (reqId, action, uid, amount) => {
+            try { await remove(ref(db, WITHDRAW_PATH + '/' + reqId)); showToast("Request Cleared", "fas fa-check", "#00FF88"); } catch(e) {}
+        };
+
+        document.getElementById('admin-logout').addEventListener('click', async () => { 
+            await update(ref(db, USERS_PATH + '/' + dbUserId), { role: 'user' }); window.location.reload(); 
+        });
+    </script>
+</html>
